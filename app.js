@@ -6,14 +6,14 @@ const mongoose = require("mongoose");
 const app = express();
 
 var corsOptions = {
-  origin: "http://localhost:3000/",
+  origin: "http://loaclhost:3000/user/login",
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
 
-app.use(cors(corsOptions));
+//app.use(cors(corsOptions));
 
-//app.use(cors());
+app.use(cors());
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
@@ -23,8 +23,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const port = 3000;
 //route imports
 const userRoute = require("./routes/userRoute");
+const puzzleRoute = require("./routes/puzzleRoute");
 
 app.use("/user", userRoute);
+app.use("/puzzle", puzzleRoute);
+
 console.log(process.env.DB_LOCAL);
 mongoose.set("strictQuery", false);
 mongoose.connect(

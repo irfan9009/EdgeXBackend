@@ -1,4 +1,3 @@
-const { response } = require("express");
 const User = require("../models/user");
 const { userCreate, userUpdate, userList } = require("../services/userService");
 let sort = { createdAt: -1 };
