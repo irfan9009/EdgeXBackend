@@ -4,31 +4,28 @@ const cors = require("cors");
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
-
-var corsOptions = {
-  origin: "http://loaclhost:3000/user/login",
-  credentials: true, //access-control-allow-credentials:true
-  optionSuccessStatus: 200,
-};
-
-//app.use(cors(corsOptions));
+const { authdecode } = require("./middlewares/auth")
 
 app.use(cors());
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
-
 // parse requests of content-type - application/x-www-form-urlencoded
+
 app.use(bodyParser.urlencoded({ extended: true }));
 const port = 3000;
+
 //route imports
 const userRoute = require("./routes/userRoute");
 const puzzleRoute = require("./routes/puzzleRoute");
 
+// Authentication enabler
+app.all("*", authdecode)
+
+// routes
 app.use("/user", userRoute);
 app.use("/puzzle", puzzleRoute);
 
-console.log(process.env.DB_LOCAL);
 mongoose.set("strictQuery", false);
 mongoose.connect(
   process.env.DB_LOCAL,

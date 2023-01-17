@@ -15,6 +15,10 @@ const userSchema = mongoose.Schema(
       type: Date,
       default: null,
     },
+    points:{
+      type:Number,
+      default:0
+    }
   },
   { timestamps: true }
 );

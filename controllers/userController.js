@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const { userCreate, userUpdate, userList } = require("../services/userService");
+const { generateAuthToken } = require("../utils/tokenGen");
 let sort = { createdAt: -1 };
 let skip = 0;
 let limit = 10;
@@ -51,7 +52,7 @@ userGetAll = async function (req, res) {
     skip = req.query.skip || skip;
     limit = req.query.limit || limit;
 
-    const select = "firstName lastName email";
+    const select = "firstName lastName email completedAt";
     const result = await userList({}, select, sort, skip, limit);
     if (result.length > 0) {
       res.status(200).json({
@@ -99,22 +100,27 @@ userLogin = async function (req, res) {
     skip = 0;
     limit = 1;
     const query = { email: req.query.email };
-    const select = "firstName lastName email";
+    const select = "firstName lastName email completedAt";
     const result = await userList(query, select, sort, skip, limit);
     if (result.length > 0) {
+      const token = await generateAuthToken({ User: { id: result[0]._id } });
+
       res.status(200).json({
         success: true,
         message: "Login Successful",
-        data: result,
+        data: { user: result[0], token: token },
       });
     } else {
-      res.status(500).json({ success: false, message: "Login Error" });
+      res
+        .status(200)
+        .json({ success: false, message: "Invalid Email account" });
     }
   } catch (error) {
     console.log("error :>> ", error);
     res.status(500).json({ success: false, message: error });
   }
 };
+
 // userPost = async function (req, res) {
 //   try {
 //   } catch (error) {
@@ -122,4 +128,11 @@ userLogin = async function (req, res) {
 //     res.status(500).json({success:false, message:error});
 //   }
 // };
-module.exports = { userPost, userPut, userGetAll, userGetSpecific, userLogin };
+module.exports = {
+  userPost,
+  userPut,
+  userGetAll,
+  userGetSpecific,
+  userLogin,
+  userCount,
+};

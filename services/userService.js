@@ -33,6 +33,15 @@ userList = async function (queryParams, select, sort, skip, limit) {
     throw error;
   }
 };
+userCount = async function (filter) {
+  try {
+    const result = User.count(filter);
+    return result;
+  } catch (error) {
+    console.log("error :>> ", error);
+    throw error;
+  }
+};
 // userCreate=async function(user){
 //     try{
 
@@ -41,4 +50,4 @@ userList = async function (queryParams, select, sort, skip, limit) {
 //         throw error;
 //     }
 // }
-module.exports = { userCreate, userUpdate, userList };
+module.exports = { userCreate, userUpdate, userList, userCount };
